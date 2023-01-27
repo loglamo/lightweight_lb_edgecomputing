@@ -1,4 +1,4 @@
-# About Kafka
+# About Kafka Service on Cluster1
 - Apache Kafka is a distributed message broker designed to handle large volumes of real-time data. A Kafka cluster is a highly scalable and fault-tolerant, and higher throughput compared to other message brokers like ActiveMQ and RabbitMQ. 
 - A publish/subscribe messaging system allows 1/n producers to publish messages without considering the number of consumers or how they will process messages. Subscribed clients are notified automatically about updates and the creation of new messages. This system is more efficient and scalable than systems where clients poll periodically to determine if new messages are available [Kafka-DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-20-04). 
 
@@ -34,4 +34,49 @@ Creating systemd unit files for the Kafka service helps to perform common servic
 
 ![unitfilezoo](https://user-images.githubusercontent.com/18479389/215031103-74fe5dd9-e411-41e9-91b6-235632d2c9d2.png)
 
-The unit file for zookeeper can be edit as the above figure. 
+The unit file for zookeeper can be edit as the above figure. The [Unit] section specifies that Zookeeper requires networking and filesystem to be ready before it can start. The [Service] section specifies systemd should use the zookeeper-server-start.sh and zookeeper-server-stop.sh shell files for starting and stopping the service. Restarting, if it exists abnormally. 
+
+Secondly, create an unit file for kafka:
+
+        $sudo nano /etc/systemd/system/kafka.service
+
+![kafkaunitfile](https://user-images.githubusercontent.com/18479389/215034811-42220ccb-f5fc-4699-909c-719352a000fd.png)
+
+Start kafka with:
+
+        $sudo systemctl start kafka    //start kafka
+        $sudo systemctl status kafka   //check status kafka
+
+![startkafka](https://user-images.githubusercontent.com/18479389/215035547-e47d11eb-bd31-460f-af35-9d848e12a898.png)
+
+## 3. Test the Kafka Installation
+- Create a new topic:
+
+        $./kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic testing     //create a topic named "testing"
+
+- Send a message to the created topic:
+
+         $echo "Hello, World" | ./kafka-console-producer.sh --broker-list localhost:9092 --topic testing > /dev/null
+
+
+- Read message from the topic:
+
+         $./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic testing --from-beginning
+
+
+![pubsubmeaasage](https://user-images.githubusercontent.com/18479389/215042324-938db059-75e7-4cd0-b083-477f3e33e904.png)
+
+Note that using the following command for creating topics with older versions 2.2 of Kafka:
+
+         $./kafka-topics.sh --create --zookeeper localhost:2181 --replication 1 --partitions 1 --topic [name_topic]    //this command does not work with latest versions with the error "no option with --zookeeper"
+
+Kafka server (Kafka service) now well runs on the machine. We can send, receive messages with command lines or using code files with various programming languages (Python, Java, Go, .etc).
+
+## Appendix
+![overviewkafka](https://user-images.githubusercontent.com/18479389/215045309-afb1af74-7b24-4669-88f2-9086c4b9b0cb.png) 
+
+Generally, Kafka ecosystem goes with three players: Producers, topics(run by brokers) and consumers as shown in above figure. It is a distributed pub-sub messaging system that maintains feeds of messages in partitioned and replicated topics (https://towardsdatascience.com/kafka-python-explained-in-10-lines-of-code-800e3e07dad1). 
+
+- __Producers__ produce messages according to their choices. It may attach a key to each message, in which case the producer guarantees that all messages with the same key will arrive to the same partition
+- __Topics__ are logs that receive data from producers and store them across their partitions. Producers always write new messages at the end of the log
+- __Consumers__ read the messages of a set of partitions of a topic
