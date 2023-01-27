@@ -72,6 +72,11 @@ Note that using the following command for creating topics with older versions 2.
 
 Kafka server (Kafka service) now well runs on the machine. We can send, receive messages with command lines or using code files with various programming languages (Python, Java, Go, .etc).
 
+__Note: We have to config kafka server with advertising address listeners so that remote machines can send them messages to the topics it holds. Eventhough remote machines can ping kafka server, firewall of kafka server does not work, it does not sure that the kafka server can receive messages.__
+
+We can config with "advertised.listeners" in /config/server.properties like:
+![configserver](https://user-images.githubusercontent.com/18479389/215106541-19dd0cc2-b4d1-4ce3-8548-ac0432b4297a.png)
+
 ## Appendix
 ![overviewkafka](https://user-images.githubusercontent.com/18479389/215045309-afb1af74-7b24-4669-88f2-9086c4b9b0cb.png) 
 
