@@ -10,4 +10,25 @@
    - [vim-pathogen](https://github.com/tpope/vim-pathogen?ref=linuxhandbook.com)
    
  ## The following steps setting Vim with vim-plug
+ 1. Install vim-plug:
+       
+             $curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim  //install vim-plug
+             
+ 2. To add a plugin, use following code snippet in the vim config file ~/.vimrc:
+
+              call plug#begin()
+              
+              Plug 'name_of_plugin'
+              
+              call plug#end()
+              
+ 3. After editing vimrc file, save the file with:
+
+               :source % 
+               
+ 4. Start installing plugins with:
+  
+               :PlugInstall       //plugins declared in vimrc file will be installed 
+              
+ 5. One of my setup for vim in 'vimrc'file in this repo, you can refer and use it
  
