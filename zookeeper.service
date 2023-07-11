@@ -1,0 +1,17 @@
+[Unit]
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+
+
+[Service]
+Type=simple
+User=syslab
+ExecStart=/home/syslab/workspace_la/Kafka/kafka/bin/zookeeper-server-start.sh /home/syslab/workspace_la/Kafka/kafka/config/zookeeper.properties
+ExecStop=/home/syslab/workspace_la/Kafka/kafka/bin/zookeeper-server-stop.sh
+Restart=on-abnormal
+
+
+
+
+[Install]
+WantedBy=multi-user.target
